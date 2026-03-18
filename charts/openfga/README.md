@@ -138,6 +138,15 @@ To uninstall/delete the `openfga` deployment:
 helm uninstall openfga
 ```
 
+## Development
+
+If you are developing or building the chart locally, you need to add the Bitnami legacy archive repository before running `helm dep update`:
+
+```sh
+helm repo add bitnami-legacy https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
+helm dep update charts/openfga
+```
+
 ## Chart Parameters
 
 Take a look at the Chart [values schema reference](https://artifacthub.io/packages/helm/openfga/openfga?modal=values-schema) for more information on the chart values that can be configured. Chart values that are null will default to the server specific default values. For more information on the server defaults please see the [official server configuration documentation](https://openfga.dev/docs/getting-started/setup-openfga/docker#configuring-the-server).
