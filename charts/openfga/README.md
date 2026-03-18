@@ -52,7 +52,17 @@ commonLabels:
 
 ### Installing with Postgres
 
-If you do not already have a Postgres deployment, you can deploy OpenFGA with Postgres with the following command:
+> **Deprecation Notice**: The bundled Bitnami PostgreSQL sub-chart now uses the [legacy archive repository](https://github.com/bitnami/charts/issues/35164) which is no longer actively maintained or receiving security updates. It is provided for backwards compatibility only and will be removed in a future release. For new deployments, we recommend deploying your database separately.
+
+If you already have a Postgres deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
+
+```sh
+helm install openfga openfga/openfga \
+  --set datastore.engine=postgres \
+  --set datastore.uri="postgres://postgres:password@postgres.default.svc.cluster.local:5432/openfga?sslmode=disable"
+```
+
+If you do not have an existing Postgres deployment, you can use the bundled sub-chart:
 
 ```sh
 helm install openfga openfga/openfga \
@@ -63,11 +73,19 @@ helm install openfga openfga/openfga \
   --set postgresql.auth.database=postgres
 ```
 
-This will bootstrap a Postgres deployment using the [`bitnami/postgresql`](https://artifacthub.io/packages/helm/bitnami/postgresql) chart and deploy OpenFGA configured in a way to connect to it.
-
 ### Installing with MySQL
 
-If you do not already have a MySQL deployment, you can deploy OpenFGA with MySQL with the following command:
+> **Deprecation Notice**: The bundled Bitnami MySQL sub-chart now uses the [legacy archive repository](https://github.com/bitnami/charts/issues/35164) which is no longer actively maintained or receiving security updates. It is provided for backwards compatibility only and will be removed in a future release. For new deployments, we recommend deploying your database separately.
+
+If you already have a MySQL deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
+
+```sh
+helm install openfga openfga/openfga \
+  --set datastore.engine=mysql \
+  --set datastore.uri="root:password@tcp(mysql.default.svc.cluster.local:3306)/openfga?parseTime=true"
+```
+
+If you do not have an existing MySQL deployment, you can use the bundled sub-chart:
 
 ```sh
 helm install openfga openfga/openfga \
@@ -76,18 +94,6 @@ helm install openfga openfga/openfga \
   --set mysql.enabled=true \
   --set mysql.auth.rootPassword=password \
   --set mysql.auth.database=mysql
-```
-
-This will bootstrap a MySQL deployment using the [`bitnami/mysql`](https://artifacthub.io/packages/helm/bitnami/mysql) chart and deploy OpenFGA configured in a way to connect to it.
-
-### Connecting to an existing Postgres or MySQL deployment
-
-If you have an existing Postgres or MySQL deployment, you can connect OpenFGA to it by providing the `datastore.uri` parameter. For example, to connect to a Postgres deployment:
-
-```sh
-helm install openfga openfga/openfga \
-  --set datastore.engine=postgres \
-  --set datastore.uri="postgres://postgres:password@postgres.postgres:5432/postgres?sslmode=disable"
 ```
 
 ### Using an existing secret for Postgres or MySQL
