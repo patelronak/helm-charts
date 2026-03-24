@@ -31,6 +31,12 @@ To pull from the GitHub OCI registry, run:
 helm install openfga -f values.yaml oci://ghcr.io/openfga/helm-charts
 ```
 
+## Deprecation Notice
+
+> **The bundled Bitnami PostgreSQL and MySQL sub-charts (`postgresql.enabled` / `mysql.enabled`) are deprecated and will be removed in a future release.** These sub-charts rely on the [Bitnami legacy archive repository](https://github.com/bitnami/charts/tree/archive-full-index), which is no longer actively maintained or receiving security updates.
+>
+> Use the `extraObjects` pattern with official Docker images instead. See the [Postgres dev/test setup](#devtest-only-quick-postgres-setup) and [MySQL dev/test setup](#devtest-only-quick-mysql-setup) sections below for working examples.
+
 ## Customization
 
 If you wish to customize the OpenFGA deployment you may supply paremeters such as the ones listed in the [values.yaml](/charts/openfga/values.yaml).
@@ -52,9 +58,7 @@ commonLabels:
 
 ### Installing with Postgres
 
-> **Deprecation Notice**: The bundled Bitnami PostgreSQL sub-chart now uses the [legacy archive repository](https://github.com/bitnami/charts/issues/35164) which is no longer actively maintained or receiving security updates. It is provided for backwards compatibility only and will be removed in a future release. For new deployments, we recommend deploying your database separately.
-
-If you already have a Postgres deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
+If you have an existing Postgres deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
 
 ```sh
 helm install openfga openfga/openfga \
@@ -62,22 +66,19 @@ helm install openfga openfga/openfga \
   --set datastore.uri="postgres://postgres:password@postgres.default.svc.cluster.local:5432/openfga?sslmode=disable"
 ```
 
-If you do not have an existing Postgres deployment, you can use the bundled sub-chart:
+#### Dev/Test Only: Quick Postgres Setup
+
+If you do not have an existing Postgres deployment and just need a quick dev/test environment, you can use `extraObjects` to deploy a minimal Postgres instance alongside OpenFGA. **This is not suitable for production** — use a managed database service or an operator like [CloudNativePG](https://cloudnative-pg.io/) instead.
+
+See [ci/postgres-values.yaml](/charts/openfga/ci/postgres-values.yaml) for a complete working example. To use it:
 
 ```sh
-helm install openfga openfga/openfga \
-  --set datastore.engine=postgres \
-  --set datastore.uri="postgres://postgres:password@openfga-postgresql.default.svc.cluster.local:5432/postgres?sslmode=disable" \
-  --set postgresql.enabled=true \
-  --set postgresql.auth.postgresPassword=password \
-  --set postgresql.auth.database=postgres
+helm install openfga openfga/openfga -f postgres-values.yaml
 ```
 
 ### Installing with MySQL
 
-> **Deprecation Notice**: The bundled Bitnami MySQL sub-chart now uses the [legacy archive repository](https://github.com/bitnami/charts/issues/35164) which is no longer actively maintained or receiving security updates. It is provided for backwards compatibility only and will be removed in a future release. For new deployments, we recommend deploying your database separately.
-
-If you already have a MySQL deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
+If you have an existing MySQL deployment, connect OpenFGA to it by providing the `datastore.uri` parameter:
 
 ```sh
 helm install openfga openfga/openfga \
@@ -85,15 +86,14 @@ helm install openfga openfga/openfga \
   --set datastore.uri="root:password@tcp(mysql.default.svc.cluster.local:3306)/openfga?parseTime=true"
 ```
 
-If you do not have an existing MySQL deployment, you can use the bundled sub-chart:
+#### Dev/Test Only: Quick MySQL Setup
+
+If you do not have an existing MySQL deployment and just need a quick dev/test environment, you can use `extraObjects` to deploy a minimal MySQL instance alongside OpenFGA. **This is not suitable for production** — use a managed database service or a MySQL operator instead.
+
+See [ci/mysql-values.yaml](/charts/openfga/ci/mysql-values.yaml) for a complete working example. To use it:
 
 ```sh
-helm install openfga openfga/openfga \
-  --set datastore.engine=mysql \
-  --set datastore.uri="root:password@tcp(openfga-mysql.default.svc.cluster.local:3306)/mysql?parseTime=true" \
-  --set mysql.enabled=true \
-  --set mysql.auth.rootPassword=password \
-  --set mysql.auth.database=mysql
+helm install openfga openfga/openfga -f mysql-values.yaml
 ```
 
 ### Using an existing secret for Postgres or MySQL
@@ -140,12 +140,14 @@ helm uninstall openfga
 
 ## Development
 
-If you are developing or building the chart locally, you need to add the Bitnami legacy archive repository before running `helm dep update`:
+If you are developing or building the chart locally and still using the deprecated Bitnami sub-chart dependencies (`postgresql.enabled` / `mysql.enabled`), you need to add the Bitnami legacy archive repository before running `helm dep update`:
 
 ```sh
 helm repo add bitnami-legacy https://raw.githubusercontent.com/bitnami/charts/archive-full-index/bitnami
 helm dep update charts/openfga
 ```
+
+This is not required if you are using the recommended `extraObjects` pattern.
 
 ## Chart Parameters
 
