@@ -225,14 +225,21 @@ datastore:
 ## DEPRECATED: The bundled PostgreSQL and MySQL sub-charts use the Bitnami legacy
 ## archive repository which is no longer actively maintained or receiving security updates.
 ## They are provided for backwards compatibility only.
-## For new deployments, use extraObjects with official Docker images instead (see examples below).
 postgresql:
   ## @param postgresql.enabled enable the bitnami/postgresql subchart (DEPRECATED - uses unsupported legacy archive)
   enabled: false
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.4.0-debian-11-r45
 
 mysql:
   ## @param mysql.enabled enable the bitnami/mysql subchart (DEPRECATED - uses unsupported legacy archive)
   enabled: false
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/mysql
+    tag: 8.0.32-debian-11-r14
 
 grpc:
   addr: 0.0.0.0:8081
