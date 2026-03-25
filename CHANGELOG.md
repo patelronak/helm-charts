@@ -1,9 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/openfga/helm-charts/compare/openfga-0.2.57...HEAD)
+## [Unreleased](https://github.com/openfga/helm-charts/compare/openfga-0.2.59...HEAD)
 
 - fix: migrate bitnami sub-chart dependencies to legacy archive repository
 - fix: add missing documentation for development instructions
+- deprecate: bundled Bitnami PostgreSQL and MySQL sub-charts (removal after July 2026)
+- docs: add extraObjects dev/test examples for PostgreSQL and MySQL using official Docker images
+- docs: add CI values files for PostgreSQL and MySQL extraObjects testing
+
+## [0.2.59](https://github.com/openfga/helm-charts/compare/openfga-0.2.58...openfga-0.2.59)
+
+- chore: Upgrade OpenFGA to v1.13.1
+
+## [0.2.58](https://github.com/openfga/helm-charts/compare/openfga-0.2.57...openfga-0.2.58)
+
+- chore: Upgrade OpenFGA to v1.13.0
 
 ## [0.2.57](https://github.com/openfga/helm-charts/compare/openfga-0.2.56...openfga-0.2.57) (2026-03-19)
 
